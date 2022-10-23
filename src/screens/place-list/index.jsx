@@ -1,26 +1,32 @@
+import { useEffect } from "react";
 import { View, Text, FlatList } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
+import { PlaceItem } from "../../components";
+import { loadPlaces } from "../../store/place.slice";
 import { styles } from "./styles";
-import {PlaceItem} from "../../components";
 
 const PlaceList = ({ navigation }) => {
-  const places=useSelector((state)=>state.place.places)
+  const dispatch = useDispatch();
+  const places = useSelector((state) => state.place.places);
 
-  const renderItem = ({item})=> (
+  useEffect(() => {
+    dispatch(loadPlaces());
+  }, [dispatch]);
+
+  const renderItem = ({ item }) => (
     <PlaceItem
-    {...item}
-    onSelect={() => navigation.navigate("PlaceDetail", { placeId: item.id })}
-  />
-    );
+      {...item}
+      onSelect={() => navigation.navigate("PlaceDetail", { placeId: item.id })}
+    />
+  );
 
-
-    const ListEmptyComponent = ()=>(
-      <View style={styles.emptyContainer}>
-        <Text style={styles.empty}>Aún no hay lugares</Text>
-      </View>
-    )
-
-
+  const ListEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.empty}>No places yet</Text>
+    </View>
+  );
+  
   return (
     <FlatList
       data={places}
